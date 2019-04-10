@@ -1,5 +1,6 @@
 # SpotifyRecorder
 **NOTE:** do not use this tool, this is just a proof of concept. It should never be executed.
+
 _This tool is just for educational purposes_
 
 ---
@@ -17,13 +18,10 @@ In general:
 - python 3.6
 
 python dependencies:
-
-| Package    | Version |
-|:-----------|:--------|
-| pip        | 18.1    |
-| PyAudio    | 0.2.9   |
-| pydub      | 0.22.1  |
-| setuptools | 40.2.0  |
+- pyaudio
+- pydub
+- dbus-python
+- pygobject
 
 ## How it works
 TL;DR
