@@ -1,6 +1,7 @@
 import pyaudio
 import wave
 import threading
+import logging
 from pydub import AudioSegment
 from time import sleep
 
@@ -13,6 +14,8 @@ class SongRecorder(threading.Thread):# {{{{{{
             channels=2,
             rate=44100):
         threading.Thread.__init__(self)
+
+        self.logger = logging.getLogger('RecordingHandlerLogger')
 
         self.song_tags = self.get_song_tags(song)
         self.chunk_size = chunk_size
@@ -65,7 +68,7 @@ class SongRecorder(threading.Thread):# {{{{{{
         waveFile.setframerate(self.rate)
         waveFile.writeframes(b''.join(frames))
         waveFile.close()
-        print('wrote song', self.song_tags['title'], '.wav')# }}}
+        self.logging.debug('Wrote song to', self.song_tags['title'] + '.wav')# }}}
 
     def convert_wav_to_mp3(self):# {{{
         AudioSegment.from_wav(self.song_tags['title'] + '.wav').export(
