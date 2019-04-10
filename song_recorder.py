@@ -2,6 +2,7 @@ import pyaudio
 import wave
 import threading
 import logging
+import os
 from pydub import AudioSegment
 
 
@@ -45,7 +46,8 @@ class SongRecorder(threading.Thread):# {{{{{{
 
     def run(self):# {{{
         self.record_song_to_file()
-        self.convert_wav_to_mp3()# }}}
+        self.convert_wav_to_mp3()
+        os.remove(self.song_tags['title'] + '.wav')# }}}
 
     def record_song_to_file(self):# {{{
         frames = []

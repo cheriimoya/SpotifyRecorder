@@ -1,5 +1,7 @@
 # SpotifyRecorder
 **NOTE:** do not use this tool, this is just a proof of concept. It should never be executed.
+_This tool is just for educational purposes_
+
 ---
 
 This tool could be used to record spotify songs to mp3 files with the mp3 tags set correctly.
@@ -30,7 +32,6 @@ TL;DR
 - start listening to a playlist or whatever
 - skip the first song, as recording starts immediately `TODO`: fix this
 - when you want to exit, stop spotify and give the tool some time to gracefully shut down
-- delete all .wav files `TODO`: automate this
 ---
 
 In detail
