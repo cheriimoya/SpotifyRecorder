@@ -16,11 +16,12 @@ In general:
 
 python dependencies:
 
-Package    Version
-pip        18.1
-PyAudio    0.2.9
-pydub      0.22.1
-setuptools 40.2.0
+| Package    | Version |
+|:-----------|:--------|
+| pip        | 18.1    |
+| PyAudio    | 0.2.9   |
+| pydub      | 0.22.1  |
+| setuptools | 40.2.0  |
 
 ## How it works
 TL;DR
