@@ -35,9 +35,16 @@ python dependencies:
 ---
 
 ### In detail
-This tool connects to the D-Bus on your system. It will then wait for spotify to broadcast on D-Bus. After spotify announces itself, the main script will parse the D-Bus message for the currently playing track. Immediately after this parsing, it will spawn a child process that in turn records the default ALSA input device. This might need to be configured with e.g. `pavucontrol`. After spawning this recording thread, the main thread will continue listening for new D-Bus messages.
+This tool connects to the D-Bus on your system. It will then wait for spotify to broadcast on D-Bus.
+
+After spotify announces itself, the main script will parse the D-Bus message for the currently playing track.
+
+Immediately after this parsing, it will spawn a child process that in turn records the default ALSA input device.
+
+This might need to be configured with e.g. `pavucontrol`. After spawning this recording thread, the main thread will continue listening for new D-Bus messages.
 
 As soon as the main thread receives a 'spotify song changed' notification from D-Bus, it will tell the old recording thread to shutdown and it will immediately spawn a new recording thread which records the new song.
 
 The old recorder thread will, after it received the shutdown signal, write the audio frames it recorded to memory to a Waveform Audio file.
+
 After the contents are written to the WAVE file, it will convert the WAVE file to a mp3 file and tag it while doing so.
