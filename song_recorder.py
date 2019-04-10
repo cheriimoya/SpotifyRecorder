@@ -3,7 +3,6 @@ import wave
 import threading
 import logging
 from pydub import AudioSegment
-from time import sleep
 
 
 class SongRecorder(threading.Thread):# {{{{{{

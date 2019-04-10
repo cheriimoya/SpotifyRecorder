@@ -2,61 +2,14 @@
 
 import dbus
 import dbus.service
-from dbus.mainloop.glib import DBusGMainLoop
 import threading
 import time
 import gobject
 import logging
 from queue import Queue
+from dbus.mainloop.glib import DBusGMainLoop
 
 import song_recorder
-
-#not usesd
-class MediaKeysHandler():# {{{
-    def __init__(self, session_bus):
-        print("Finding Spotify...")
-        spotify_bus = session_bus.get_object(
-                "org.mpris.MediaPlayer2.spotify",
-                "/org/mpris/MediaPlayer2")
-        self.spotify = dbus.Interface(spotify_bus,
-                "org.mpris.MediaPlayer2.Player")
-
-        print("Connect to MediaKeys...")
-        bus = session_bus.get_object(
-                "org.gnome.SettingsDaemon",
-                "/org/gnome/SettingsDaemon/MediaKeys")
-        bus.connect_to_signal("MediaPlayerKeyPressed",
-                self.key_pressed)
-        self.mediakeys = dbus.Interface(bus,
-                "org.gnome.SettingsDaemon.MediaKeys")
-        self.mediakeys.GrabMediaPlayerKeys("Spotify", time.time())
-
-    def shutdown(self):
-        self.mediakeys.ReleaseMediaPlayerKeys("Spotify")
-
-    def key_pressed(self, *keys):
-        print("Received MediaPlayerKeyPressed:")
-        print("  " + repr(keys))
-
-        if self.spotify:
-            for key in keys:
-                if key == "":
-                    pass
-
-                elif key == "Play":
-                    self.spotify.PlayPause()
-
-                elif key == "Pause":
-                    self.spotify.PlayPause()
-
-                elif key == "Stop":
-                    self.spotify.Stop()
-
-                elif key == "Next":
-                    self.spotify.Next()
-
-                elif key == "Previous":
-                    self.spotify.Previous()# }}}
 
 
 class RecordingHandler(object):# {{{
