@@ -67,11 +67,11 @@ class RecordingHandler(object):# {{{
         self.thread_queue = Queue()
 
         bus = session_bus.get_object(
-                "org.mpris.MediaPlayer2.spotify",
-                "/org/mpris/MediaPlayer2")
+                'org.mpris.MediaPlayer2.spotify',
+                '/org/mpris/MediaPlayer2')
 
         bus.connect_to_signal(
-                "PropertiesChanged",
+                'PropertiesChanged',
                 self.properties_changed)# }}}
 
     def properties_changed(self,# {{{
@@ -127,13 +127,13 @@ class SpotifyRecorder(object):# {{{
         self.session_bus = dbus.SessionBus(mainloop=bus_loop)
 
         bus = self.session_bus.get_object(
-                "org.freedesktop.DBus",
-                "/org/freedesktop/DBus")
+                'org.freedesktop.DBus',
+                '/org/freedesktop/DBus')
 
         bus.connect_to_signal(
-                "NameOwnerChanged",
+                'NameOwnerChanged',
                 self.spotify_started,
-                arg0="org.mpris.MediaPlayer2.spotify")
+                arg0='org.mpris.MediaPlayer2.spotify')
 
         self.logger.debug('Waiting for spotify to be started...')
 
