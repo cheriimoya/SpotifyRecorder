@@ -15,7 +15,7 @@ class SongRecorder(threading.Thread):# {{{{{{
             rate=44100):
         threading.Thread.__init__(self)
 
-        self.logger = logging.getLogger('RecordingHandlerLogger')
+        self.logger = logging.getLogger('SpotifyRecorder')
 
         self.song_tags = self.get_song_tags(song)
         self.chunk_size = chunk_size
@@ -69,7 +69,7 @@ class SongRecorder(threading.Thread):# {{{{{{
         waveFile.setframerate(self.rate)
         waveFile.writeframes(b''.join(frames))
         waveFile.close()
-        self.logging.debug('Wrote song to', self.song_tags['title'] + '.wav')# }}}
+        self.logger.info('Wrote song to ' + self.song_tags['title'] + '.wav')# }}}
 
     def convert_wav_to_mp3(self):# {{{
         AudioSegment.from_wav(self.song_tags['title'] + '.wav').export(

@@ -14,7 +14,7 @@ import song_recorder
 
 class RecordingHandler(object):# {{{
     def __init__(self, session_bus):# {{{
-        self.logger = logging.getLogger('RecordingHandlerLogger')
+        self.logger = logging.getLogger('SpotifyRecorder')
 
         self.current_song = {'trackId':'None'}
         self.thread_queue = Queue()
@@ -31,7 +31,7 @@ class RecordingHandler(object):# {{{
             interface_name,
             changed_properties,
             invalid_properties):
-        self.logger.info('Properties have changed')
+        self.logger.debug('Properties have changed')
 
         if 'Metadata' not in changed_properties:
             self.logger.warn('Metadata not found in changed properties')
@@ -59,11 +59,10 @@ class RecordingHandler(object):# {{{
             thread = self.thread_queue.get()
             thread.shutdown_flag.set()
 
-        self.logger.debug('Starting song recorder...')
+        self.logger.info('Starting song recorder...')
         song_recorder_thread = song_recorder.SongRecorder(self.current_song)
         song_recorder_thread.start()
         self.thread_queue.put(song_recorder_thread)
-        self.logger.debug('Recording new song:', str(self.current_song['title']))# }}}
 
     def shutdown(self):# {{{
         while not self.thread_queue.empty():
@@ -73,7 +72,7 @@ class RecordingHandler(object):# {{{
 
 class SpotifyRecorder(object):# {{{
     def __init__(self):# {{{
-        self.logger = logging.getLogger('RecordingHandlerLogger')
+        self.logger = logging.getLogger('SpotifyRecorder')
 
         self.logger.debug('Setting up DBus...')
         bus_loop = DBusGMainLoop(set_as_default=True)
@@ -88,32 +87,37 @@ class SpotifyRecorder(object):# {{{
                 self.spotify_started,
                 arg0='org.mpris.MediaPlayer2.spotify')
 
-        self.logger.debug('Waiting for spotify to be started...')
+        self.logger.info('Waiting for spotify to be started...')
 
         try:
             self.loop = gobject.MainLoop()
             gobject.threads_init()
             self.loop.run()
         finally:
-            self.logger.debug('Spotify got shut down, stopping recorder...')# }}}
+            self.logger.info('Spotify got shut down, stopping recorder...')# }}}
 
     def spotify_started(self, name, before, after):# {{{
-        self.logger.debug('Found spotify on dbus!')
+        self.logger.info('Found spotify on dbus!')
         if name != 'org.mpris.MediaPlayer2.spotify':
             return
 
         if after:
             self.handler = RecordingHandler(self.session_bus)
         else:
-            self.logger.debug('Lost spotify on dbus, shutting down')
+            self.logger.info('Lost spotify on dbus, shutting down')
             # FIXME
             if self.handler:
                 self.handler.shutdown()
             self.loop.quit()
-            self.logger.debug('Finished shutting down')# }}}}}}
+            self.logger.info('Finished shutting down')# }}}}}}
 
 
 if __name__ == '__main__':# {{{
-    logger = logging.getLogger('RecordingHandlerLogger')
-    logger.setLevel(logging.INFO)
+    logger = logging.getLogger('SpotifyRecorder')
+    logger.setLevel(logging.DEBUG)
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s: [%(levelname)5s] %(message)s')
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
     SpotifyRecorder()# }}}
