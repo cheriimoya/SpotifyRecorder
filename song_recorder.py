@@ -1,18 +1,19 @@
-import pyaudio
-import wave
 import threading
 import logging
 import os
+import wave
+
+import pyaudio
 from pydub import AudioSegment
 
 
-class SongRecorder(threading.Thread):# {{{{{{
-    def __init__(self,# {{{
-            song,
-            chunk_size=1024,
-            wave_format=pyaudio.paInt16,
-            channels=2,
-            rate=44100):
+class SongRecorder(threading.Thread):  # {{{{{{
+    def __init__(self,  # {{{
+                 song,
+                 chunk_size=1024,
+                 wave_format=pyaudio.paInt16,
+                 channels=2,
+                 rate=44100):
         threading.Thread.__init__(self)
 
         self.logger = logging.getLogger('SpotifyRecorder')
@@ -32,9 +33,9 @@ class SongRecorder(threading.Thread):# {{{{{{
                 rate=self.rate,
                 input=True,
                 start=False,
-                frames_per_buffer=chunk_size)# }}}
+                frames_per_buffer=chunk_size)  # }}}
 
-    def get_song_tags(self, song):# {{{
+    def get_song_tags(self, song):  # {{{
         song_tags = {}
 
         song_tags['title'] = song['title'].decode('utf-8')
@@ -42,14 +43,14 @@ class SongRecorder(threading.Thread):# {{{{{{
         song_tags['album'] = song['album'].decode('utf-8')
         song_tags['trackNumber'] = song['trackNumber']
 
-        return song_tags# }}}
+        return song_tags  # }}}
 
-    def run(self):# {{{
+    def run(self):  # {{{
         self.record_song_to_file()
         self.convert_wav_to_mp3()
-        os.remove(self.song_tags['title'] + '.wav')# }}}
+        os.remove(self.song_tags['title'] + '.wav')  # }}}
 
-    def record_song_to_file(self):# {{{
+    def record_song_to_file(self):  # {{{
         frames = []
         self.stream.start_stream()
         try:
@@ -63,26 +64,26 @@ class SongRecorder(threading.Thread):# {{{{{{
         self.stream.close()
         self.audio.terminate()
 
-        waveFile = wave.open(self.song_tags['title'] + '.wav', 'wb')
-        waveFile.setnchannels(self.channels)
-        waveFile.setsampwidth(self.audio.get_sample_size(self.wave_format))
-        waveFile.setframerate(self.rate)
-        waveFile.writeframes(b''.join(frames))
-        waveFile.close()
-        self.logger.info('Wrote song to ' + self.song_tags['title'] + '.wav')# }}}
+        wave_file = wave.open(self.song_tags['title'] + '.wav', 'wb')
+        wave_file.setnchannels(self.channels)
+        wave_file.setsampwidth(self.audio.get_sample_size(self.wave_format))
+        wave_file.setframerate(self.rate)
+        wave_file.writeframes(b''.join(frames))
+        wave_file.close()
+        self.logger.info(
+                'Wrote song to ' + self.song_tags['title'] + '.wav')  # }}}
 
-    def convert_wav_to_mp3(self):# {{{
+    def convert_wav_to_mp3(self):  # {{{
         AudioSegment.from_wav(self.song_tags['title'] + '.wav').export(
                 self.song_tags['title'] + ".mp3",
-                format = "mp3",
-                tags = self.return_mp3_tags_as_dict())# }}}
+                format="mp3",
+                tags=self.return_mp3_tags_as_dict())  # }}}
 
-    def return_mp3_tags_as_dict(self):# {{{
+    def return_mp3_tags_as_dict(self):  # {{{
         tags = {
                 'title': self.song_tags['title'],
                 'artist': self.song_tags['artist'],
                 'album': self.song_tags['album'],
                 'track': self.song_tags['trackNumber']
                 }
-        return tags# }}}
-
+        return tags  # }}}
