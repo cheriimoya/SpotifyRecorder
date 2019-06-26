@@ -5,7 +5,7 @@ from queue import Queue
 import dbus
 import dbus.service
 from dbus.mainloop.glib import DBusGMainLoop
-import gobject
+from gi.repository import GLib
 
 import song_recorder
 
@@ -107,8 +107,8 @@ class SpotifyRecorder:  # {{{
         self.logger.info('Waiting for spotify to be started...')
 
         try:
-            self.loop = gobject.MainLoop()
-            gobject.threads_init()
+            self.loop = GLib.MainLoop()
+            GLib.threads_init()
             self.loop.run()
         finally:
             self.logger.info(
